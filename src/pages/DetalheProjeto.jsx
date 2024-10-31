@@ -4,9 +4,9 @@ import Card from 'react-bootstrap/Card';
 import logo from '../assets/react.svg'
 import { useLocation, Navigate } from 'react-router-dom';
 
-const DetalheProduto = () => {
+const DetalheProjeto = () => {
 
-    const {produto} = useLocation().state;
+    const {projeto} = useLocation().state;
     const [clicou, setClicou] = useState(false);
     const [navegar, setNavegar] = useState(false);
 
@@ -26,17 +26,16 @@ const DetalheProduto = () => {
             <Card>
                 <Card.Img variant="top" src={logo} />
                 <Card.Body>
-                    <Card.Title>{produto.id} - {produto.nome}</Card.Title>             
-                    <Card.Text>{produto.descricao}</Card.Text>
-                    <Card.Text>{produto.codigo}</Card.Text>
-                    <Card.Text>{produto.preco}</Card.Text>
-                    <Card.Text>{produto.categoria}</Card.Text>
-                    <Card.Text>{produto.destaque}</Card.Text>
+                    <Card.Title>{projeto.id} - {projeto.nome_projeto}</Card.Title>             
+                    <Card.Text>{projeto.integrantes}</Card.Text>
+                    <Card.Text>{projeto.proposta}</Card.Text>
+                    
+                    
                     
                     {(navegar) ? <Navigate 
                         to="/alterar" 
                         replace={false}
-                        state={{produto: produto}}
+                        state={{projeto: projeto}}
                     /> : <></>}
                     
                     <Button onClick={()=>setClicou(true)}>
@@ -49,4 +48,4 @@ const DetalheProduto = () => {
     )
 }
 
-export default DetalheProduto
+export default DetalheProjeto

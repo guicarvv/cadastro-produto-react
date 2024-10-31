@@ -16,7 +16,7 @@ const Listagem = () => {
     const [itemApagado, setItemApagado] = useState(false)
 
     function receberDados(){
-        axios.get('http://localhost:8080/produto'
+        axios.get('http://localhost:8080/projeto'
         ).then(response => {
             console.log(response.data)
             setDados(response.data)
@@ -25,7 +25,7 @@ const Listagem = () => {
     }
 
     async function apagarDados(produto){
-        axios.delete('http://localhost:8080/produto',
+        axios.delete('http://localhost:8080/projeto',
         {
             data : produto,
             headers: {                  
@@ -57,7 +57,7 @@ const Listagem = () => {
 
     const ItensLista = () => dados.map(
         produto => 
-        <li key={produto.id} >
+        <li key={projeto.id} >
             <Card className="card-product">
                 <Card.Img className="garbage"
                     onClick={async ()=>{
@@ -66,15 +66,15 @@ const Listagem = () => {
                     src={trash} />
                 <Card.Img className="img-product" variant="top" src={logo} />
                 <Card.Body>
-                    <Card.Title>{produto.nome}</Card.Title>
+                    <Card.Title>{projeto.nome_projeto}</Card.Title>
                     <Card.Text>
-                        {produto.descricao}
+                        {projeto.Integrantes}
                     </Card.Text>
                     <Card.Text>
-                        {produto.preco}
+                        {projeto.proposta}
                     </Card.Text>
-                    <Link to="/detalhe" state={{produto: produto}}>
-                        Detalhe do Produto
+                    <Link to="/detalhe" state={{projeto: projeto}}>
+                        Detalhe do projeto
                     </Link>
                 </Card.Body>
             </Card>
@@ -84,7 +84,7 @@ const Listagem = () => {
     
     return (
     <div>
-        <h1>Cadastrar Produto</h1>
+        <h1>Cadastrar projeto</h1>
         <Link to={"/cadastro"}>
             CADASTRO
         </Link>

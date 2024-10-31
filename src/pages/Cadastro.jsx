@@ -9,7 +9,7 @@ const Cadastro = () => {
     const [clicou, setClicou] = useState(false)
 
     function enviarDados(){
-        axios.post('http://localhost:8080/produto', 
+        axios.post('http://localhost:8080/projeto', 
             dados
         ).then(response => console.log(response))
         .then(dados => alert('Dados enviados com sucesso'))
@@ -23,32 +23,24 @@ const Cadastro = () => {
     
     return (
     <div>
-        <h1>Cadastrar Produto</h1>
+        <h1>Cadastrar Projeto</h1>
         <Formik
             initialValues={{
                 id: 0,
-                nome: '',
-                descricao: '',
-                codigoBarras: '',
-                foto: null,
-                preco: 0.0,
-                categoria: '',
-                destaque: '',
-                statusProd: 'ATIVO'
+                nome_projeto: '',
+                integrantes: '',
+                proposta: '',
+                statusProj: 'ATIVO'
             }}
             onSubmit={(values, actions) => {
 
                 if(values.nome.length > 0){
                         setTimeout(() => {
                         setDados({
-                            nome: values.nome,
-                            descricao: values.descricao,
-                            codigoBarras: values.codigoBarras,
-                            foto: values.foto,
-                            preco: values.preco,
-                            categoria: values.categoria,
-                            destaque: values.destaque,
-                            statusProd: values.statusProd
+                            id: values.id,
+                            nome_projeto: values.nome_projeto,
+                            integrantes: values.integrantes,
+                            proposta: values.proposta
                         })
                         setClicou(true)
                         // alert(JSON.stringify(values, null, 2));
@@ -68,7 +60,7 @@ const Cadastro = () => {
                             type="number"
                             onChange={props.handleChange}
                             onBlur={props.handleBlur}
-                            value={props.values.id}
+                            value={projeto.id}
                             placeholder='0'
                             name="id"
                             disabled
@@ -81,9 +73,9 @@ const Cadastro = () => {
                             type="text"
                             onChange={props.handleChange}
                             onBlur={props.handleBlur}
-                            value={props.values.nome}
-                            placeholder="Nome do Produto"
-                            name="nome"
+                            value={props.values.nome_projeto}
+                            placeholder="Nome do projeto"
+                            name="nome_projeto"
                         />
                         {props.errors.nome && <div id="feedback">{props.errors.nome}</div>}
                     </div>
@@ -94,81 +86,17 @@ const Cadastro = () => {
                             onChange={props.handleChange}
                             onBlur={props.handleBlur}
                             value={props.values.descricao}
-                            name="descricao"
-                            placeholder="Descrição do Produto"
+                            name="proposta"
+                            placeholder="Proposta"
                         />
                         {props.errors.descricao && <div id="feedback">{props.errors.descricao}</div>}
                     </div>
-                    <div>
-                        <input
-                            type="text"
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            value={props.values.codigoBarras}
-                            name="codigoBarras"
-                            placeholder="1112223334445"
-                        />
-                        {props.errors.codigoBarras && <div id="feedback">{props.errors.codigoBarras}</div>}
-                    </div>
-                    <div>
-                        <input
-                            type="image"
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            value={props.values.foto}
-                            name="foto"
-                            placeholder="Foto do Produto"
-                            hidden
-                        />
-                        {props.errors.foto && <div id="feedback">{props.errors.foto}</div>}
-                    </div>
-                    <div>
-                        <input
-                            type="text"
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            value={props.values.preco}
-                            name="preco"
-                            placeholder="0.0"
-                        />
-                        {props.errors.preco && <div id="feedback">{props.errors.preco}</div>}
-                    </div>
-                    <div>
-                        <input
-                            type="text"
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            value={props.values.categoria}
-                            name="categoria"
-                            placeholder="Categoria do Produto"
-                        />
-                        {props.errors.categoria && <div id="feedback">{props.errors.categoria}</div>}
-                    </div>
-                    <div>
-                        <input
-                            type="text"
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            value={props.values.destaque}
-                            name="destaque"
-                            placeholder="Destaque do Produto"
-                        />
-                        {props.errors.destaque && <div id="feedback">{props.errors.destaque}</div>}
-                    </div>
-                    <div>
-                        <select
-                            type="text"
-                            onChange={props.handleChange}
-                            onBlur={props.handleBlur}
-                            value={props.values.statusProd}
-                            name="statusProd"
-                        >
-                            <option>ATIVO</option>
-                            <option>INATIVO</option>
-                        </select>
-                        {props.errors.statusProd && <div id="feedback">{props.errors.statusProd}</div>}
-                    </div>
                     
+
+                    
+                    
+
+                               
                     <button type="submit">SALVAR</button>
                 </form>
             )}
