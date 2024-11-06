@@ -16,7 +16,7 @@ const Listagem = () => {
     const [itemApagado, setItemApagado] = useState(false)
 
     function receberDados(){
-        axios.get('http://localhost:8080/projeto'
+        axios.get('http://localhost:8080/projetos'
         ).then(response => {
             console.log(response.data)
             setDados(response.data)
@@ -25,7 +25,7 @@ const Listagem = () => {
     }
 
     async function apagarDados(produto){
-        axios.delete('http://localhost:8080/projeto',
+        axios.delete('http://localhost:8080/projetos',
         {
             data : produto,
             headers: {                  

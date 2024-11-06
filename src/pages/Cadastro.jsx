@@ -10,11 +10,11 @@ const Cadastro = () => {
     // Função para enviar dados ao servidor
     const enviarDados = async (novoProjeto) => {
         try {
-            const response = await axios.post('http://localhost:8080/projeto', novoProjeto);
+            const response = await axios.post('http://localhost:8080/projetos', novoProjeto);
             console.log(response);
             setMensagem('Projeto cadastrado com sucesso!');
             // Atualiza a lista de projetos
-            setProjetos(prevProjetos => [...prevProjetos, response.data]);
+            setProjetos((prevProjetos) => [...prevProjetos, response.data]);
         } catch (error) {
             console.error('Erro ao cadastrar projeto:', error);
             setMensagem('Erro ao cadastrar projeto. Tente novamente.');
@@ -28,19 +28,19 @@ const Cadastro = () => {
             <Formik
                 initialValues={{
                     id: 0,
-                    nome_projeto: '',
+                    nomeProjeto: '',
                     integrantes: '',
-                    rm_integrantes: '',
+                    rmIntegrantes: '',
                     proposta: '',
                     statusProj: 'ATIVO'
                 }}
                 onSubmit={(values, { resetForm }) => {
-                    if (values.nome_projeto) {
+                    if (values.nomeProjeto) {
                         enviarDados({
                             id: values.id,
-                            nome_projeto: values.nome_projeto,
+                            nomeProjeto: values.nomeProjeto,
                             integrantes: values.integrantes,
-                            rm_integrantes: values.rm_integrantes,
+                            rmIntegrantes: values.rmIntegrantes,
                             proposta: values.proposta,
                             statusProj: values.statusProj
                         });
@@ -70,12 +70,12 @@ const Cadastro = () => {
                                 type="text"
                                 onChange={props.handleChange}
                                 onBlur={props.handleBlur}
-                                value={props.values.nome_projeto}
+                                value={props.values.nomeProjeto}
                                 placeholder="Nome do projeto"
-                                name="nome_projeto"
+                                name="nomeProjeto"
                                 required
                             />
-                            {props.errors.nome_projeto && <div className="feedback">{props.errors.nome_projeto}</div>}
+                            {props.errors.nomeProjeto && <div className="feedback">{props.errors.nomeProjeto}</div>}
                         </div>
 
                         <div className="form-group">
@@ -96,12 +96,12 @@ const Cadastro = () => {
                                 type="text"
                                 onChange={props.handleChange}
                                 onBlur={props.handleBlur}
-                                value={props.values.rm_integrantes}
-                                name="rm_integrantes"
+                                value={props.values.rmIntegrantes}
+                                name="rmIntegrantes"
                                 placeholder="RM dos Integrantes"
                                 required
                             />
-                            {props.errors.rm_integrantes && <div className="feedback">{props.errors.rm_integrantes}</div>}
+                            {props.errors.rmIntegrantes && <div className="feedback">{props.errors.rmIntegrantes}</div>}
                         </div>
 
                         <div className="form-group">
@@ -127,9 +127,9 @@ const Cadastro = () => {
                 {projetos.map((projeto, index) => (
                     <li key={index} className="projeto-item">
                         <p><strong>ID:</strong> {projeto.id}</p>
-                        <p><strong>Nome do Projeto:</strong> {projeto.nome_projeto}</p>
+                        <p><strong>Nome do Projeto:</strong> {projeto.nomeProjeto}</p>
                         <p><strong>Integrantes:</strong> {projeto.integrantes}</p>
-                        <p><strong>RM dos Integrantes:</strong> {projeto.rm_integrantes}</p>
+                        <p><strong>RM dos Integrantes:</strong> {projeto.rmIntegrantes}</p>
                         <p><strong>Proposta:</strong> {projeto.proposta}</p>
                         <p><strong>Status do Projeto:</strong> {projeto.statusProj}</p>
                     </li>
@@ -137,7 +137,6 @@ const Cadastro = () => {
             </ul>
         </div>
     );
-
 };
 
 export default Cadastro;
