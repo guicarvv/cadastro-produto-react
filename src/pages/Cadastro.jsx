@@ -6,45 +6,83 @@ import './Cadastro.css';
 const Cadastro = () => {
     const [projetos, setProjetos] = useState([]);
     const [mensagem, setMensagem] = useState('');
+    const [projetoEditando, setProjetoEditando] = useState(null);  // Estado para controle do projeto em edição
 
-    // Função para enviar dados ao servidor
+    // Função para enviar dados ao servidor (criar novo projeto ou editar existente)
     const enviarDados = async (novoProjeto) => {
         try {
-            const response = await axios.post('http://localhost:8080/projetos', novoProjeto);
-            console.log(response);
-            setMensagem('Projeto cadastrado com sucesso!');
+            let response;
+            if (novoProjeto.id) {
+                // Se id estiver presente, editamos o projeto
+                response = await axios.put(`http://localhost:8080/projetos/${novoProjeto.id}`, novoProjeto);
+                setMensagem('Projeto atualizado com sucesso!');
+            } else {
+                // Se não houver id, criamos um novo projeto
+                response = await axios.post('http://localhost:8080/projetos', novoProjeto);
+                setMensagem('Projeto cadastrado com sucesso!');
+            }
+            
             // Atualiza a lista de projetos
-            setProjetos((prevProjetos) => [...prevProjetos, response.data]);
+            setProjetos((prevProjetos) => {
+                if (novoProjeto.id) {
+                    return prevProjetos.map(projeto => projeto.id === novoProjeto.id ? response.data : projeto);
+                } else {
+                    return [...prevProjetos, response.data];
+                }
+            });
         } catch (error) {
-            console.error('Erro ao cadastrar projeto:', error);
-            setMensagem('Erro ao cadastrar projeto. Tente novamente.');
+            console.error('Erro ao cadastrar/atualizar projeto:', error);
+            setMensagem('Erro ao salvar projeto. Tente novamente.');
         }
+    };
+
+    // Função para excluir projeto
+    const excluirProjeto = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8080/projetos/${id}`);
+            setMensagem('Projeto excluído com sucesso!');
+            setProjetos((prevProjetos) => prevProjetos.filter(projeto => projeto.id !== id));
+        } catch (error) {
+            console.error('Erro ao excluir projeto:', error);
+            setMensagem('Erro ao excluir projeto. Tente novamente.');
+        }
+    };
+
+    // Função para carregar dados no formulário para edição
+    const editarProjeto = (projeto) => {
+        setProjetoEditando(projeto);
+    };
+
+    // Função para limpar o formulário (caso esteja editando)
+    const limparFormulario = () => {
+        setProjetoEditando(null);
     };
 
     return (
         <div className="cadastro-container">
-            <h1>Cadastrar Projeto</h1>
+            <h1>{projetoEditando ? 'Editar Projeto' : 'Cadastrar Projeto'}</h1>
             {mensagem && <div className="mensagem">{mensagem}</div>}
+
             <Formik
                 initialValues={{
-                    id: 0,
-                    nomeProjeto: '',
-                    integrantes: '',
-                    rmIntegrantes: '',
-                    proposta: '',
-                    statusProj: 'ATIVO'
+                    id: projetoEditando ? projetoEditando.id : 0,
+                    nomeProjeto: projetoEditando ? projetoEditando.nomeProjeto : '',
+                    integrantes: projetoEditando ? projetoEditando.integrantes : '',
+                    proposta: projetoEditando ? projetoEditando.proposta : '',
+                    statusProj: projetoEditando ? projetoEditando.statusProj : 'ATIVO',
                 }}
+                enableReinitialize
                 onSubmit={(values, { resetForm }) => {
                     if (values.nomeProjeto) {
                         enviarDados({
                             id: values.id,
                             nomeProjeto: values.nomeProjeto,
                             integrantes: values.integrantes,
-                            rmIntegrantes: values.rmIntegrantes,
                             proposta: values.proposta,
-                            statusProj: values.statusProj
+                            statusProj: values.statusProj,
                         });
                         resetForm();
+                        limparFormulario();
                     } else {
                         setMensagem('Favor preencher informações!');
                     }
@@ -62,7 +100,6 @@ const Cadastro = () => {
                                 name="id"
                                 disabled
                             />
-                            {props.errors.id && <div className="feedback">{props.errors.id}</div>}
                         </div>
 
                         <div className="form-group">
@@ -75,7 +112,6 @@ const Cadastro = () => {
                                 name="nomeProjeto"
                                 required
                             />
-                            {props.errors.nomeProjeto && <div className="feedback">{props.errors.nomeProjeto}</div>}
                         </div>
 
                         <div className="form-group">
@@ -88,20 +124,6 @@ const Cadastro = () => {
                                 placeholder="Nome dos Integrantes"
                                 required
                             />
-                            {props.errors.integrantes && <div className="feedback">{props.errors.integrantes}</div>}
-                        </div>
-
-                        <div className="form-group">
-                            <input
-                                type="text"
-                                onChange={props.handleChange}
-                                onBlur={props.handleBlur}
-                                value={props.values.rmIntegrantes}
-                                name="rmIntegrantes"
-                                placeholder="RM dos Integrantes"
-                                required
-                            />
-                            {props.errors.rmIntegrantes && <div className="feedback">{props.errors.rmIntegrantes}</div>}
                         </div>
 
                         <div className="form-group">
@@ -114,10 +136,10 @@ const Cadastro = () => {
                                 placeholder="Proposta"
                                 required
                             />
-                            {props.errors.proposta && <div className="feedback">{props.errors.proposta}</div>}
                         </div>
 
-                        <button type="submit">SALVAR</button>
+                        <button type="submit">{projetoEditando ? 'Atualizar' : 'Salvar'}</button>
+                        {projetoEditando && <button type="button" onClick={limparFormulario}>Cancelar</button>}
                     </form>
                 )}
             </Formik>
@@ -129,9 +151,10 @@ const Cadastro = () => {
                         <p><strong>ID:</strong> {projeto.id}</p>
                         <p><strong>Nome do Projeto:</strong> {projeto.nomeProjeto}</p>
                         <p><strong>Integrantes:</strong> {projeto.integrantes}</p>
-                        <p><strong>RM dos Integrantes:</strong> {projeto.rmIntegrantes}</p>
                         <p><strong>Proposta:</strong> {projeto.proposta}</p>
                         <p><strong>Status do Projeto:</strong> {projeto.statusProj}</p>
+                        <button onClick={() => editarProjeto(projeto)}>Editar</button>
+                        <button onClick={() => excluirProjeto(projeto.id)}>Excluir</button>
                     </li>
                 ))}
             </ul>
